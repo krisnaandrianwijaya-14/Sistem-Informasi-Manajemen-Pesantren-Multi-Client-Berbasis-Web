@@ -16,7 +16,11 @@
             </div>
             <nav class="flex-1 p-4 space-y-1 text-sm">
                 <a href="{{ route('platform.dashboard') }}" class="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
-                <a href="#" class="block px-3 py-2 rounded hover:bg-slate-800">Daftar Client</a>
+<a href="{{ route('platform.clients.index') }}"
+   class="block px-3 py-2 rounded hover:bg-slate-800
+          {{ request()->routeIs('platform.clients.*') ? 'bg-slate-800' : '' }}">
+   Daftar Client
+</a>
                 <a href="#" class="block px-3 py-2 rounded hover:bg-slate-800">Modul</a>
                 <a href="#" class="block px-3 py-2 rounded hover:bg-slate-800">Audit Log</a>
                 <a href="#" class="block px-3 py-2 rounded hover:bg-slate-800">Pengguna Platform</a>

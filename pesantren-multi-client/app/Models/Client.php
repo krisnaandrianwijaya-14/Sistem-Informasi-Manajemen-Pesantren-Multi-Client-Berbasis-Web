@@ -68,4 +68,16 @@ class Client extends Model
     {
         return $this->status === 'active';
     }
+
+    /** @return HasMany<ClientAdminFee, $this> */
+public function adminFees(): HasMany
+{
+    return $this->hasMany(ClientAdminFee::class);
+}
+
+/** @return HasMany<ClientBankAccount, $this> */
+public function bankAccounts(): HasMany
+{
+    return $this->hasMany(ClientBankAccount::class);
+}
 }
