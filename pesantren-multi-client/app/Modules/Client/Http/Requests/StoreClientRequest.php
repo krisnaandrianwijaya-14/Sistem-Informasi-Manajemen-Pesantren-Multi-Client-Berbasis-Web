@@ -18,7 +18,7 @@ class StoreClientRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:120'],
-            'code' => ['required', 'alpha_dash', 'max:30', Rule::unique('clients', 'code')],
+            // 'code' => ['required', 'alpha_dash', 'max:30', Rule::unique('clients', 'code')],
             'slug' => ['required', 'alpha_dash', 'max:100', Rule::unique('clients', 'slug')],
             'fee_per_student' => ['required', 'integer', 'min:0', 'max:10000000'],
 

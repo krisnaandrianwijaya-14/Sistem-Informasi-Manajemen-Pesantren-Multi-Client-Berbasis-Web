@@ -25,11 +25,11 @@
                  class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
         </label>
 
-        <label class="block">
+        {{-- <label class="block">
           <span class="mb-1 block text-sm font-medium text-slate-700">Kode (unik)</span>
           <input name="code" value="{{ old('code') }}" required
                  class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
-        </label>
+        </label> --}}
 
         <label class="block">
           <span class="mb-1 block text-sm font-medium text-slate-700">Slug URL</span>

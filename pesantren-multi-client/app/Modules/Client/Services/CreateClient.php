@@ -30,7 +30,7 @@ final class CreateClient
     {
         return DB::transaction(function () use ($data): Client {
             $client = (new Client)->forceFill([
-                'code' => $data['code'],
+                // 'code' => $data['code'],
                 'slug' => $data['slug'],
                 'name' => $data['name'],
                 'status' => 'active',
