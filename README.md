@@ -1,4 +1,4 @@
-<h1 align="center">🕌 Sistem Manajemen Pesantren Multi-Client Berbasis Web</h1>
+<h1 align="center">Sistem Manajemen Pesantren Multi-Client Berbasis Web</h1>
 <p align="center"><i>Proyek aplikasi SaaS multi-tenant untuk manajemen operasional dan administrasi pesantren</i></p>
 
 ---
