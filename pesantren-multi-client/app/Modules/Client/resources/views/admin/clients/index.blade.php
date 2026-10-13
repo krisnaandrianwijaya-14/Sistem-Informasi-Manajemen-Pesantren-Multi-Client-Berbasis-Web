@@ -47,14 +47,30 @@
               <span @class([
                 'inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium',
                 'bg-green-100 text-green-800' => $client->status === 'active',
-                'bg-slate-100 text-slate-700' => $client->status !== 'active',
+                'bg-red-100 text-red-800' => $client->status === 'suspended',
+                'bg-slate-100 text-slate-700' => ! in_array($client->status, ['active', 'suspended'], true),
               ])>
                 {{ strtoupper($client->status) }}
               </span>
             </td>
             <td class="px-4 py-3 text-right">
-              <a href="{{ route('platform.clients.edit', $client) }}"
-                 class="text-sm font-medium underline">Kelola</a>
+              <div class="flex items-center justify-end gap-3">
+                <a href="{{ route('platform.clients.edit', $client) }}"
+                   class="text-sm font-medium underline">Kelola</a>
+
+                <form method="POST"
+                      action="{{ route('platform.clients.status', $client) }}"
+                      class="inline">
+                  @csrf
+                  <input type="hidden" name="status"
+                         value="{{ $client->status === 'active' ? 'suspended' : 'active' }}">
+                  <button type="submit"
+                          class="text-sm font-medium hover:underline
+                                 {{ $client->status === 'active' ? 'text-red-600' : 'text-green-600' }}">
+                    {{ $client->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                  </button>
+                </form>
+              </div>
             </td>
           </tr>
         @empty

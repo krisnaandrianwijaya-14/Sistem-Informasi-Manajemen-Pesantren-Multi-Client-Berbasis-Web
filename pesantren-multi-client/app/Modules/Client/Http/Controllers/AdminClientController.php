@@ -12,12 +12,14 @@ use App\Modules\Client\Services\CreateClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use App\Modules\Client\Services\ChangeClientStatus;
+use Illuminate\Http\Request;
 
 final class AdminClientController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private CreateClient $createClient) {}
+    public function __construct(private CreateClient $createClient, private ChangeClientStatus $changeClientStatus) {}
 
     public function index(): View
     {
@@ -84,4 +86,22 @@ final class AdminClientController extends Controller
 
         return back()->with('status', 'Skema biaya administrasi dijadwalkan.');
     }
+
+    /**
+ * UC-21 alur 3a — aktif/nonaktifkan client.
+ */
+public function changeStatus(Request $request, Client $client): RedirectResponse
+{
+    $this->authorize('update', $client);
+
+    $data = $request->validate([
+        'status' => ['required', 'in:active,suspended'],
+    ]);
+
+    app(ChangeClientStatus::class)->handle($client, $data['status']);
+
+    $label = $data['status'] === 'active' ? 'diaktifkan' : 'dinonaktifkan';
+
+    return back()->with('status', "Client \"{$client->name}\" {$label}.");
+}
 }

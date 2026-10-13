@@ -20,6 +20,10 @@ Route::prefix('clients')->name('clients.')->group(function (): void {
     Route::post('/{client}/fee', [AdminClientController::class, 'scheduleFee'])
         ->name('fee.store');
 
+// UC-21 alur 3a — aktif/nonaktifkan client
+Route::post('/{client}/status', [AdminClientController::class, 'changeStatus'])
+    ->name('status');
+
     // Rekening bank
     Route::post('/{client}/bank', [AdminClientBankController::class, 'store'])
         ->name('bank.store');
