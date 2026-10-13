@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 class ClientManagementTest extends TestCase
 {
@@ -172,4 +174,30 @@ public function test_bank_account_stored_encrypted_with_last4(): void
             ->get(route('platform.clients.index'))
             ->assertForbidden();
     }
+
+    public function test_onboarding_sends_password_reset_link_to_pic(): void
+{
+    Notification::fake();
+    $this->actingAs($this->platformAdmin());
+
+    $this->post(route('platform.clients.store'), [
+        'name' => 'Pesantren Baru',
+        'slug' => 'pesantren-baru',
+        'fee_per_student' => 5000,
+        'pic_name' => 'Ust. Baru',
+        'pic_email' => 'ust.baru@test.local',
+        'bank_code' => 'BNI',
+        'account_holder' => 'Ust. Baru',
+        'account_number' => '9876543210',
+    ])->assertRedirect();
+
+    // Owner user dibuat
+    $owner = User::where('email', 'ust.baru@test.local')->first();
+    $this->assertNotNull($owner);
+    $this->assertSame('admin_pesantren', $owner->role);
+    $this->assertTrue($owner->isActive());
+
+    // Email reset password dikirim ke PIC
+    Notification::assertSentTo($owner, ResetPassword::class);
+}
 }

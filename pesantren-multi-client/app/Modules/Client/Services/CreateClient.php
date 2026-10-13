@@ -61,6 +61,7 @@ final class CreateClient
                     'name' => $data['pic_name'],
                     'email' => $data['pic_email'],
                     'password' => Str::password(32),
+                    'role' => 'admin_pesantren',
                     'status' => 'active',
                     'email_verified_at' => now(),
                 ]);
