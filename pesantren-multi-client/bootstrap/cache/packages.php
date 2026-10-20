@@ -1,14 +1,9 @@
 <?php return array (
-  'barryvdh/laravel-dompdf' => 
+  'laravel/boost' => 
   array (
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-      'Pdf' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-    ),
     'providers' => 
     array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
+      0 => 'Laravel\\Boost\\BoostServiceProvider',
     ),
   ),
   'laravel/fortify' => 
@@ -16,6 +11,17 @@
     'providers' => 
     array (
       0 => 'Laravel\\Fortify\\FortifyServiceProvider',
+    ),
+  ),
+  'laravel/mcp' => 
+  array (
+    'aliases' => 
+    array (
+      'Mcp' => 'Laravel\\Mcp\\Facades\\Mcp',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laravel\\Mcp\\Server\\McpServiceProvider',
     ),
   ),
   'laravel/pail' => 
@@ -39,11 +45,18 @@
       0 => 'Laravel\\Passkeys\\PasskeysServiceProvider',
     ),
   ),
-  'laravel/sanctum' => 
+  'laravel/roster' => 
   array (
     'providers' => 
     array (
-      0 => 'Laravel\\Sanctum\\SanctumServiceProvider',
+      0 => 'Laravel\\Roster\\RosterServiceProvider',
+    ),
+  ),
+  'laravel/sail' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Sail\\SailServiceProvider',
     ),
   ),
   'laravel/tinker' => 
@@ -51,6 +64,35 @@
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
+  'livewire/blaze' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Livewire\\Blaze\\BlazeServiceProvider',
+    ),
+  ),
+  'livewire/flux' => 
+  array (
+    'aliases' => 
+    array (
+      'Flux' => 'Flux\\Flux',
+    ),
+    'providers' => 
+    array (
+      0 => 'Flux\\FluxServiceProvider',
+    ),
+  ),
+  'livewire/livewire' => 
+  array (
+    'aliases' => 
+    array (
+      'Livewire' => 'Livewire\\Livewire',
+    ),
+    'providers' => 
+    array (
+      0 => 'Livewire\\LivewireServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -72,6 +114,13 @@
     'providers' => 
     array (
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
+  'pestphp/pest-plugin-laravel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Pest\\Laravel\\PestServiceProvider',
     ),
   ),
 );

@@ -2,70 +2,67 @@
 
 namespace App\Providers;
 
-use App\Http\Responses\LoginResponse;
-use App\Http\Responses\LoginViewResponse;
-use App\Http\Responses\LogoutResponse;
-use App\Models\User;
-use App\Support\Auth\LoginLockout;
+use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Laravel\Fortify\Contracts\LoginViewResponse as LoginViewResponseContract;
-use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
     public function register(): void
     {
-        $this->app->singleton(LoginViewResponseContract::class, LoginViewResponse::class);
-        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
-        $this->app->singleton(LogoutResponseContract::class, LogoutResponse::class);
+        //
     }
 
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
-        Fortify::loginView(fn () => view('auth.login'));
+        $this->configureActions();
+        $this->configureViews();
+        $this->configureRateLimiting();
+    }
 
-        // UC-19 — Verifikasi kredensial + status akun + penguncian + pesan generik.
-        Fortify::authenticateUsing(function (Request $request): User {
-            $lockout = app(LoginLockout::class);
-            $email = (string) $request->input(Fortify::username());
+    /**
+     * Configure Fortify actions.
+     */
+    private function configureActions(): void
+    {
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+    }
 
-            // 1. Akun terkunci?
-            if ($lockout->isLocked($email)) {
-                throw ValidationException::withMessages([
-                    Fortify::username() => 'Akun terkunci sementara karena terlalu banyak percobaan gagal. Coba lagi dalam '.$lockout->minutesRemaining($email).' menit.',
-                ]);
-            }
+    /**
+     * Configure Fortify views.
+     */
+    private function configureViews(): void
+    {
+        Fortify::loginView(fn () => view('pages::auth.login'));
+        Fortify::verifyEmailView(fn () => view('pages::auth.verify-email'));
+        Fortify::resetPasswordView(fn () => view('pages::auth.reset-password'));
+        Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
+    }
 
-            $user = User::query()->where('email', $email)->first();
-
-            // 2. Kredensial & status — semua gagal pesan sama (anti-enumerasi akun).
-            if ($user !== null
-                && $user->isActive()
-                && Hash::check((string) $request->input('password'), $user->password)) {
-                $lockout->clear($email);
-
-                return $user;
-            }
-
-            // 3. Catat kegagalan
-            $lockout->recordFailure($email);
-
-            throw ValidationException::withMessages([
-                Fortify::username() => 'Surel atau kata sandi tidak sesuai.',
-            ]);
+    /**
+     * Configure rate limiting.
+     */
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('two-factor', function (Request $request) {
+            return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
         RateLimiter::for('login', function (Request $request) {
-            // Lapis per-IP terhadap brute force massal.
-            // Penguncian per akun ditangani LoginLockout.
-            return Limit::perMinute(20)->by($request->ip() ?? 'unknown');
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+
+            return Limit::perMinute(5)->by($throttleKey);
         });
+
     }
 }

@@ -1,0 +1,6 @@
+app/Modules/Academic/routes/
+app/Modules/Academic/resources/views/livewire/
+app/Modules/Dormitory/routes/
+app/Modules/Dormitory/resources/views/livewire/
+app/Modules/Platform/routes/
+app/Modules/Platform/resources/views/livewire/

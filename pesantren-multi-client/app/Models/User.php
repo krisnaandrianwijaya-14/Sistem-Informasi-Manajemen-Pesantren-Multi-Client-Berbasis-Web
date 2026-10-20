@@ -2,19 +2,32 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'password', 'role', 'status'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property Carbon|null $two_factor_confirmed_at
+ * @property string|null $remember_token
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ */
+#[Fillable(['name', 'email', 'password'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -29,46 +42,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => 'string',
-            'status' => 'string',
         ];
     }
-    public function hasRole(string $role): bool
-{
-    return $this->role === $role && $this->isActive();
-}
 
-public function isActive(): bool
-{
-    return $this->status === 'active';
-}
+    /**
+     * Get the user's initials
+     */
+    public function initials(): string
+    {
+        $initials = Str::initials($this->name, true);
 
-public function clientUsers(): HasMany
-{
-    return $this->hasMany(ClientUser::class);
-}
-
-public function clients(): BelongsToMany
-{
-    return $this->belongsToMany(Client::class, 'client_users')
-                ->withPivot(['role', 'is_active'])
-                ->withTimestamps();
-}
-
-/**
- * Slug client pertama yang aktif untuk user ini.
- * Dipakai untuk redirect setelah login.
- */
-public function defaultClientSlug(): string
-{
-    $slug = $this->clientUsers()
-        ->where('is_active', true)
-        ->whereHas('client', fn ($q) => $q->where('status', 'active'))
-        ->with('client')
-        ->first()
-        ?->client
-        ?->slug;
-
-    return $slug ?? 'demo';
-}
+        return Str::length($initials) > 1
+            ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
+            : $initials;
+    }
 }
