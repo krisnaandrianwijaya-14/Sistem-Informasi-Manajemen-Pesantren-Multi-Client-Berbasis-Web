@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -6,7 +6,7 @@ use App\Http\Controllers\PermitPdfController;
 use App\Http\Controllers\Api\PermitController;
 
 Route::get('/', function () {
-    // Kalau sudah login → arahkan ke dashboard sesuai role
+    // Kalau sudah login â†’ arahkan ke dashboard sesuai role
 if (Auth::check()) {
     /** @var \App\Models\User $user */
     $user = Auth::user();
@@ -18,11 +18,11 @@ if (Auth::check()) {
             'wali_asrama'     => redirect('/client/'.$user->defaultClientSlug().'/asrama/dashboard'),
             'wali_santri'     => redirect('/client/'.$user->defaultClientSlug().'/wali/dashboard'),
             'santri'          => redirect('/client/'.$user->defaultClientSlug().'/santri/dashboard'),
-            default           => redirect('/login'),
+            default => abort(403, 'Role Anda tidak dikenali sistem. Hubungi Admin.'),
         };
     }
 
-    // Kalau belum login → tampilkan form login langsung
+    // Kalau belum login â†’ tampilkan form login langsung
     return view('auth.login');
 })->name('root');
 
@@ -68,3 +68,6 @@ Route::middleware('auth:sanctum')->prefix('permits')->group(function () {
     Route::post('/depart',   [PermitController::class, 'depart']);
     Route::post('/report',   [PermitController::class, 'report']);
 });
+
+
+

@@ -1,37 +1,25 @@
-<x-layouts.client title="Dashboard Admin Pesantren">
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-2xl font-bold mb-2">
-            Assalamu'alaikum, {{ auth()->user()->name }}
-        </h2>
-        @php
-    $ctx = app(\App\Support\ClientContext::class);
-    $clientName = $ctx->has() ? $ctx->client()->name : 'Pesantren';
-@endphp
-        <p class="text-slate-600 mb-4">
-            Dashboard admin <strong>{{ request()->route('client')->name ?? 'Pesantren' }}</strong>.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-emerald-50 rounded-lg p-4">
-                <div class="text-sm text-emerald-600 font-medium">Total Santri</div>
-                <div class="text-3xl font-bold text-emerald-900">0</div>
-            </div>
-            <div class="bg-blue-50 rounded-lg p-4">
-                <div class="text-sm text-blue-600 font-medium">Kelas</div>
-                <div class="text-3xl font-bold text-blue-900">0</div>
-            </div>
-            <div class="bg-purple-50 rounded-lg p-4">
-                <div class="text-sm text-purple-600 font-medium">Kamar</div>
-                <div class="text-3xl font-bold text-purple-900">0</div>
-            </div>
-            <div class="bg-amber-50 rounded-lg p-4">
-                <div class="text-sm text-amber-600 font-medium">Tagihan Bulan Ini</div>
-                <div class="text-3xl font-bold text-amber-900">0</div>
-            </div>
-        </div>
-
-        <p class="mt-6 text-sm text-slate-500">
-            Modul CRUD santri, akademik, asrama, dan keuangan akan dibangun pada minggu-minggu berikutnya.
-        </p>
-    </div>
-</x-layouts.client>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex h-screen">
+    <aside class="w-64 bg-[#0f766e] text-white flex flex-col">
+        <div class="p-4 text-xl font-bold border-b border-teal-700">Pesantren Demo</div>
+        <nav class="flex-1 p-4 space-y-1 text-sm">
+            <a href="{{ url('/client/demo/admin/dashboard') }}" class="block px-4 py-2 hover:bg-teal-800 rounded font-semibold">Dashboard</a>
+            <a href="{{ url('/client/demo/students') }}" class="block px-4 py-2 hover:bg-teal-800 rounded">Data Santri</a>
+            <a href="{{ url('/client/demo/classes') }}" class="block px-4 py-2 hover:bg-teal-800 rounded">Data Kelas</a>
+            <a href="{{ url('/client/demo/teachers') }}" class="block px-4 py-2 hover:bg-teal-800 rounded">Data Guru</a>
+            <a href="{{ url('/client/demo/subjects') }}" class="block px-4 py-2 hover:bg-teal-800 rounded">Mata Pelajaran</a>
+            <a href="{{ url('/client/demo/schedules') }}" class="block px-4 py-2 hover:bg-teal-800 rounded">Jadwal Pelajaran</a>
+        </nav>
+    </aside>
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold">Assalamu'alaikum, Admin Test</h1>
+        <p class="text-gray-600">Dashboard admin Pesantren.</p>
+    </main>
+</body>
+</html>

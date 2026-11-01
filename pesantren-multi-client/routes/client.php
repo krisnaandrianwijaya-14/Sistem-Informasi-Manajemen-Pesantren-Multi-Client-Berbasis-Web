@@ -14,3 +14,14 @@ Route::get('/test-scope/students/{student}', function (\App\Models\Client $clien
         'match' => $student->client_id === $client->id,
     ]);
 });
+
+Route::resource('classes', \App\Http\Controllers\Admin\SchoolClassController::class);
+Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
+    Route::resource('teachers', \App\Http\Controllers\Admin\TeacherController::class);
+    Route::resource('subjects', \App\Http\Controllers\Admin\SubjectController::class);
+    Route::resource('schedules', \App\Http\Controllers\Admin\ScheduleController::class);
+
+
+
+
+
