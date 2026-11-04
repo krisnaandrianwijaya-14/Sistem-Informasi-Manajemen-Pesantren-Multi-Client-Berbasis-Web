@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('address')->nullable()->after('name');
+            $table->string('city')->nullable()->after('address');
+            $table->integer('estimated_students')->default(0)->after('city');
+            // Menyimpan modul yang aktif dalam bentuk JSON
+            $table->json('active_modules')->nullable()->after('status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('clients', function (Blueprint $table) {
+            $table->dropColumn(['address', 'city', 'estimated_students', 'active_modules']);
+        });
+    }
+};

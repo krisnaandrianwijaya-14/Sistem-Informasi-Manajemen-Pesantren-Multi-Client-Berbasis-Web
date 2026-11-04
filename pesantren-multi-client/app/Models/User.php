@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -25,7 +26,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role', 'email_verified_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -56,4 +57,17 @@ class User extends Authenticatable implements MustVerifyEmail
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
     }
+
+        public function clients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class)
+                    ->withPivot('role')
+                    ->withTimestamps();
+    }
+
+    public function hasAccessToClient(int $clientId): bool
+    {
+        return $this->clients()->where('client_id', $clientId)->exists();
+    }
 }
+
