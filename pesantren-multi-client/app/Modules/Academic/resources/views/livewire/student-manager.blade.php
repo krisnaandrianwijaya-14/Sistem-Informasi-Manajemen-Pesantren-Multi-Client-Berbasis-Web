@@ -99,6 +99,7 @@ new class extends Component
                         <!-- Aksi: Detail & Hapus -->
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ url('/client/demo/admin/students/' . $student->id) }}" class="text-emerald-600 hover:text-emerald-800 text-sm font-semibold underline decoration-2 underline-offset-2">Detail</a>
+                            <a href="{{ url('/client/demo/admin/students/' . $student->id . '/edit') }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold underline decoration-2 underline-offset-2">Edit</a>
                             
                             <form action="{{ url('/client/demo/admin/students/' . $student->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus santri ini?');" class="inline">
                                 @csrf

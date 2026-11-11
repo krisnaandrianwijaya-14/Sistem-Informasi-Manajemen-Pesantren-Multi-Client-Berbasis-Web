@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -93,3 +93,18 @@ Route::get('/client/demo/admin/students/{id}', function ($id) {
 use App\Http\Controllers\StudentController;
 Route::post('/client/demo/admin/students', [StudentController::class, 'store'])->name('client.admin.students.store');
 Route::delete('/client/demo/admin/students/{id}', [StudentController::class, 'destroy'])->name('client.admin.students.destroy');
+Route::get('/client/demo/admin/students/{id}/edit', [StudentController::class, 'edit'])->name('client.admin.students.edit');
+Route::put('/client/demo/admin/students/{id}', [StudentController::class, 'update'])->name('client.admin.students.update');
+use App\Http\Controllers\AttendanceRecapController;
+Route::get('/client/demo/admin/attendance-recap', [AttendanceRecapController::class, 'index'])->name('client.admin.attendance.recap');
+
+// ==========================================
+// RUTE JADWAL (Orang B)
+// ==========================================
+use App\Http\Controllers\ScheduleController;
+Route::get('/client/demo/admin/schedules/create', [ScheduleController::class, 'create'])->name('client.admin.schedules.create');
+Route::get('/client/demo/admin/schedules', [ScheduleController::class, 'index'])->name('client.admin.schedules');
+Route::post('/client/demo/admin/schedules', [ScheduleController::class, 'store'])->name('client.admin.schedules.store');
+use App\Http\Controllers\AttendanceController;
+Route::get('/client/demo/admin/attendance/{scheduleId}', [AttendanceController::class, 'create'])->name('client.admin.attendance');
+Route::post('/client/demo/admin/attendance/{scheduleId}', [AttendanceController::class, 'store'])->name('client.admin.attendance.store');
