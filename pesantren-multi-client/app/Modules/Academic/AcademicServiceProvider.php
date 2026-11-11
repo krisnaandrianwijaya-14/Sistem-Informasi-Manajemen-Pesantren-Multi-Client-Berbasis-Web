@@ -3,16 +3,19 @@
 namespace App\Modules\Academic;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
-final class AcademicServiceProvider extends ServiceProvider
+class AcademicServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-        // Binding kontrak -> implementasi (diisi di modul lanjut)
-    }
-
     public function boot(): void
     {
-        // Rute, event listener, dan policy modul didaftarkan di sini.
+        // Daftarkan namespace Livewire 'academic::'
+        Livewire::addNamespace(
+            namespace: 'academic',
+            viewPath: __DIR__ . '/resources/views/livewire'
+        );
+
+        // Daftarkan folder view modul
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'academic');
     }
 }

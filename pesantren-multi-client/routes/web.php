@@ -71,3 +71,25 @@ Route::middleware('auth:sanctum')->prefix('permits')->group(function () {
 
 
 
+
+// Route Data Santri Admin
+Route::get('/client/demo/admin/students', function () {
+    return view('client.admin.students');
+})->name('client.admin.students');
+// Route Jadwal Pelajaran & Absensi (Orang B)
+Route::get('/client/demo/admin/schedules', function () {
+    return view('client.admin.schedules');
+})->name('client.admin.schedules');
+
+Route::get('/client/demo/admin/attendance/{scheduleId}', function ($scheduleId) {
+    return view('client.admin.attendance', ['scheduleId' => $scheduleId]);
+})->name('client.admin.attendance');
+Route::get('/client/demo/admin/students/create', function () {
+    return view('client.admin.students-create');
+})->name('client.admin.students.create');
+Route::get('/client/demo/admin/students/{id}', function ($id) {
+    return view('client.admin.students-detail', ['id' => $id]);
+})->name('client.admin.students.detail');
+use App\Http\Controllers\StudentController;
+Route::post('/client/demo/admin/students', [StudentController::class, 'store'])->name('client.admin.students.store');
+Route::delete('/client/demo/admin/students/{id}', [StudentController::class, 'destroy'])->name('client.admin.students.destroy');

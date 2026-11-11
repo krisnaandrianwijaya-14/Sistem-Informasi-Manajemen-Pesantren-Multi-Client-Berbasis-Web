@@ -2,32 +2,27 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToClient;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Concerns\BelongsToTenantTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Schedule extends Model
 {
-    use HasFactory, BelongsToClient;
+    use BelongsToTenantTrait;
 
-    protected $fillable = [
-        'client_id', 'class_id', 'subject_id', 'teacher_id',
-        'day_of_week', 'start_time', 'end_time', 'room',
-    ];
+    protected $fillable = ['class_id', 'subject_id', 'teacher_id', 'day', 'start_time', 'end_time'];
 
-    public function schoolClass(): BelongsTo
+    public function classes()
     {
-        return $this->belongsTo(SchoolClass::class, 'class_id');
+        return $this->belongsTo(Classes::class, 'class_id');
     }
 
-    public function subject(): BelongsTo
+    public function subjects()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 
-    public function teacher(): BelongsTo
+    public function teacher()
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 }
