@@ -2,17 +2,12 @@
 
 namespace App\Modules\Platform;
 
-use Illuminate\Support\ServiceProvider;
+use App\Modules\ModuleServiceProvider;
 
-final class PlatformServiceProvider extends ServiceProvider
+class PlatformServiceProvider extends ModuleServiceProvider
 {
-    public function register(): void
+    protected function moduleAlias(): string
     {
-        // Binding kontrak -> implementasi (diisi di modul lanjut)
-    }
-
-    public function boot(): void
-    {
-        // Rute, event listener, dan policy modul didaftarkan di sini.
+        return 'platform';
     }
 }
