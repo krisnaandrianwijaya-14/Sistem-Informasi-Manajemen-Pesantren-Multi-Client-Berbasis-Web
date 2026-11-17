@@ -1,0 +1,128 @@
+<x-layouts.platform title="{{ $client->name }}">
+  <div class="max-w-3xl space-y-6">
+    @if (session('status'))
+      <div class="rounded-lg bg-green-100 px-4 py-2 text-sm text-green-800">
+        {{ session('status') }}
+      </div>
+    @endif
+
+    <div class="flex items-center gap-3">
+      <h1 class="text-xl font-semibold">{{ $client->name }}</h1>
+      <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+        {{ $client->status }}
+      </span>
+    </div>
+
+    {{-- Section: Fee Administrasi --}}
+    <section class="rounded-xl border border-slate-200 bg-white p-6">
+      <h2 class="mb-3 font-semibold">Biaya Administrasi (Effective-Dated)</h2>
+      <p class="mb-4 text-sm">
+        Fee aktif saat ini:
+        <strong>Rp {{ number_format((int) ($activeFee?->fee_per_student ?? 0), 0, ',', '.') }} / santri</strong>
+      </p>
+
+      <form method="POST" action="{{ route('platform.clients.fee.store', $client) }}"
+            class="space-y-3">
+        @csrf
+
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-slate-700">Fee baru (Rp / santri)</span>
+          <input name="fee_per_student" type="number" min="0" required
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
+        </label>
+
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium text-slate-700">Berlaku mulai</span>
+          <input name="effective_at" type="datetime-local"
+                 min="{{ now()->format('Y-m-d\TH:i') }}" required
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
+        </label>
+
+        <p class="rounded-r-lg border-s-4 border-red-600 bg-red-50 px-3 py-2 text-xs text-slate-700">
+          Versi baru berlaku mulai tanggal tsb. Tagihan lama memakai snapshot fee saat dibuat.
+        </p>
+
+        <button type="submit"
+                class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+          Jadwalkan
+        </button>
+      </form>
+
+      <h3 class="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Riwayat perubahan
+      </h3>
+      <ul class="space-y-1 text-sm" data-test="fee-history">
+        @forelse ($fees as $fee)
+          <li>
+            Rp {{ number_format((int) $fee->fee_per_student, 0, ',', '.') }} —
+            berlaku {{ $fee->valid_from->translatedFormat('j M Y H:i') }}
+            @if ($fee->valid_to) s/d {{ $fee->valid_to->translatedFormat('j M Y H:i') }} @endif
+          </li>
+        @empty
+          <li class="text-slate-500">Belum ada riwayat.</li>
+        @endforelse
+      </ul>
+    </section>
+
+    {{-- Section: Rekening Bank --}}
+    <section class="rounded-xl border border-slate-200 bg-white p-6">
+      <h2 class="mb-3 font-semibold">Rekening Bank</h2>
+
+      <ul class="mb-4 space-y-2 text-sm">
+        @forelse ($client->bankAccounts as $acc)
+          <li class="flex flex-wrap items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
+            <span class="font-medium">
+              {{ $acc->bank_code }} •••• {{ $acc->account_last4 }} — {{ $acc->account_holder }}
+            </span>
+            <span @class([
+              'rounded-full px-2 py-0.5 text-xs font-medium',
+              'bg-green-100 text-green-800' => $acc->status === 'verified',
+              'bg-amber-100 text-amber-800' => $acc->status === 'unverified',
+              'bg-red-100 text-red-800' => $acc->status === 'rejected',
+            ])>
+              {{ $acc->status }}
+            </span>
+            @if ($acc->is_primary)
+              <span class="rounded bg-slate-900 px-2 py-0.5 text-xs font-semibold text-white">PRIMARY</span>
+            @endif
+
+            @if ($acc->status === 'unverified')
+              <form method="POST" action="{{ route('platform.clients.bank.verify', [$client, $acc]) }}" class="inline">
+                @csrf <input type="hidden" name="approve" value="1">
+                <button class="text-xs text-green-700 underline">Verifikasi</button>
+              </form>
+              <form method="POST" action="{{ route('platform.clients.bank.verify', [$client, $acc]) }}" class="inline">
+                @csrf <input type="hidden" name="approve" value="0">
+                <button class="text-xs text-red-700 underline">Tolak</button>
+              </form>
+            @endif
+
+            @if ($acc->status === 'verified' && ! $acc->is_primary)
+              <form method="POST" action="{{ route('platform.clients.bank.primary', [$client, $acc]) }}" class="inline">
+                @csrf
+                <button class="text-xs text-blue-700 underline">Jadikan utama</button>
+              </form>
+            @endif
+          </li>
+        @empty
+          <li class="text-slate-500">Belum ada rekening.</li>
+        @endforelse
+      </ul>
+
+      <form method="POST" action="{{ route('platform.clients.bank.store', $client) }}"
+            class="grid gap-3 sm:grid-cols-3">
+        @csrf
+        <input name="bank_code" placeholder="Bank" required
+               class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+        <input name="account_holder" placeholder="Nama pemilik" required
+               class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+        <input name="account_number" placeholder="Nomor rekening" required
+               class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+        <button type="submit"
+                class="sm:col-span-3 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+          Tambah Rekening
+        </button>
+      </form>
+    </section>
+  </div>
+</x-layouts.platform>

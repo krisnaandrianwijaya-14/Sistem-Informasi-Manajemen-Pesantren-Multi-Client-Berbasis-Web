@@ -2,22 +2,17 @@
 
 namespace App\Modules\Academic;
 
-use App\Modules\ModuleServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class AcademicServiceProvider extends ModuleServiceProvider
+final class AcademicServiceProvider extends ServiceProvider
 {
-    protected function moduleAlias(): string
+    public function register(): void
     {
-        return 'academic';
+        // Binding kontrak -> implementasi (diisi di modul lanjut)
     }
 
-    // Tambahkan fungsi boot ini untuk memaksa pendaftaran view
     public function boot(): void
     {
-        // Daftarkan view secara eksplisit menggunakan __DIR__
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'academic');
-
-        // Jalankan fungsi boot bawaan (untuk route dan livewire)
-        parent::boot();
+        // Rute, event listener, dan policy modul didaftarkan di sini.
     }
 }

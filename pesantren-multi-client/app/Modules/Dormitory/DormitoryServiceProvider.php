@@ -2,12 +2,17 @@
 
 namespace App\Modules\Dormitory;
 
-use App\Modules\ModuleServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class DormitoryServiceProvider extends ModuleServiceProvider
+final class DormitoryServiceProvider extends ServiceProvider
 {
-    protected function moduleAlias(): string
+    public function register(): void
     {
-        return 'dormitory';
+        // Binding kontrak -> implementasi (diisi di modul lanjut)
+    }
+
+    public function boot(): void
+    {
+        // Rute, event listener, dan policy modul didaftarkan di sini.
     }
 }
