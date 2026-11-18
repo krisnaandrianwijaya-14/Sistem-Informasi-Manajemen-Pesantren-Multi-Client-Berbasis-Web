@@ -1,7 +1,15 @@
-﻿<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-gray-100 p-10">
-<div class="max-w-lg mx-auto bg-white p-6 rounded shadow"><h1 class="text-xl font-bold mb-4">Tambah Mata Pelajaran</h1>
-<form action="{{ route('client.admin.subjects.store') }}" method="POST">@csrf
-<div class="mb-4"><label>Nama Kitab/Mapel</label><input type="text" name="name" class="w-full border p-2" required placeholder="Contoh: Fathul Qorib"></div>
-<div class="mb-4"><label>Kode (Opsional)</label><input type="text" name="code" class="w-full border p-2" placeholder="Contoh: MP-01"></div>
-<button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
-</form></div></body></html>
+<x-layouts.admin title="Tambah Mapel">
+    @php $clientSlug = request()->route('client')?->slug ?? request()->route('client') ?? 'demo'; @endphp
+    <form action="{{ client_route('client.admin.subjects.store', ['client' => $clientSlug]) }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+        @csrf
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Nama Mata Pelajaran *</label>
+            <input type="text" name="name" value="{{ old('name') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
+            @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+        <div class="mt-6 flex gap-3">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan</button>
+            <a href="{{ client_route('client.admin.subjects.index', ['client' => $clientSlug]) }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg text-sm font-bold">Batal</a>
+        </div>
+    </form>
+</x-layouts.admin>

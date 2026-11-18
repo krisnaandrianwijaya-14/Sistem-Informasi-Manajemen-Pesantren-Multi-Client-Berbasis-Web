@@ -3,26 +3,26 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToClient;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Teacher extends Model
 {
-    use HasFactory, BelongsToClient;
+    use BelongsToClient;
+
+    protected $table = 'teachers';
 
     protected $fillable = [
-        'client_id', 'user_id', 'name', 'employee_number', 'phone', 'status',
+        'client_id', 'user_id', 'name',
+        'employee_number', 'phone', 'status'
     ];
 
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function schedules(): HasMany
+    public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'teacher_id');
     }
 }

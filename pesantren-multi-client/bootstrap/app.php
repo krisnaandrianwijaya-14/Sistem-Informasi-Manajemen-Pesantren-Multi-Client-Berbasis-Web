@@ -14,41 +14,40 @@ return Application::configure(basePath: dirname(__DIR__))
     health: '/up',
     then: function (): void {
         // Platform Admin
-        Route::middleware(['web', 'auth', 'verified', 'role:platform_admin'])
+        Route::middleware(['web', 'auth', 'role:platform_admin'])
             ->prefix('platform')
             ->name('platform.')
             ->group(base_path('routes/platform.php'));
 
         // Admin Pesantren
-        Route::middleware(['web', 'auth', 'verified', 'client', 'role:admin_pesantren'])
+        Route::middleware(['web', 'auth', 'client', 'role:admin_pesantren'])
             ->prefix('client/{client:slug}/admin')
             ->name('client.admin.')
-            ->scopeBindings()
             ->group(base_path('routes/client.php'));
 
         // Guru
-        Route::middleware(['web', 'auth', 'verified', 'client', 'role:guru'])
+        Route::middleware(['web', 'auth', 'client', 'role:guru'])
             ->prefix('client/{client:slug}/guru')
             ->name('client.guru.')
             ->scopeBindings()
             ->group(base_path('routes/guru.php'));
 
         // Wali Asrama
-        Route::middleware(['web', 'auth', 'verified', 'client', 'role:wali_asrama'])
+        Route::middleware(['web', 'auth', 'client', 'role:wali_asrama'])
             ->prefix('client/{client:slug}/asrama')
             ->name('client.asrama.')
             ->scopeBindings()
             ->group(base_path('routes/asrama.php'));
 
         // Wali Santri
-        Route::middleware(['web', 'auth', 'verified', 'client', 'role:wali_santri'])
+        Route::middleware(['web', 'auth', 'client', 'role:wali_santri'])
             ->prefix('client/{client:slug}/wali')
             ->name('client.wali.')
             ->scopeBindings()
             ->group(base_path('routes/wali.php'));
 
         // Santri
-        Route::middleware(['web', 'auth', 'verified', 'client', 'role:santri'])
+        Route::middleware(['web', 'auth', 'client', 'role:santri'])
             ->prefix('client/{client:slug}/santri')
             ->name('client.santri.')
             ->scopeBindings()

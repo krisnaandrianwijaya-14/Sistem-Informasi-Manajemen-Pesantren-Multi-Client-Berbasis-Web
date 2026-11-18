@@ -6,10 +6,9 @@ use App\Http\Controllers\PermitPdfController;
 use App\Http\Controllers\Api\PermitController;
 
 Route::get('/', function () {
-    // Kalau sudah login â†’ arahkan ke dashboard sesuai role
-if (Auth::check()) {
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
+    if (Auth::check()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
         return match ($user->role) {
             'platform_admin'  => redirect('/platform'),
@@ -22,11 +21,9 @@ if (Auth::check()) {
         };
     }
 
-    // Kalau belum login â†’ tampilkan form login langsung
     return view('auth.login');
 })->name('root');
 
-// Logout GET (workaround development)
 Route::get('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -34,7 +31,6 @@ Route::get('/logout', function () {
     return redirect('/login');
 })->middleware('auth')->name('logout.get');
 
-// Serve QR image langsung dari storage (bypass symlink)
 Route::get('/qr-image/{path}', function (string $path) {
     $fullPath = storage_path('app/public/' . $path);
 
@@ -62,49 +58,8 @@ Route::get('/students/{student}/qr', function (\App\Models\Student $student) {
 Route::get('/permits/{permit}/pdf', [PermitPdfController::class, 'show'])
     ->name('permits.pdf');
 
-    // routes/api.php
 Route::middleware('auth:sanctum')->prefix('permits')->group(function () {
     Route::post('/initiate', [PermitController::class, 'initiate']);
     Route::post('/depart',   [PermitController::class, 'depart']);
     Route::post('/report',   [PermitController::class, 'report']);
 });
-
-
-
-
-// Route Data Santri Admin
-Route::get('/client/demo/admin/students', function () {
-    return view('client.admin.students');
-})->name('client.admin.students');
-// Route Jadwal Pelajaran & Absensi (Orang B)
-Route::get('/client/demo/admin/schedules', function () {
-    return view('client.admin.schedules');
-})->name('client.admin.schedules');
-
-Route::get('/client/demo/admin/attendance/{scheduleId}', function ($scheduleId) {
-    return view('client.admin.attendance', ['scheduleId' => $scheduleId]);
-})->name('client.admin.attendance');
-Route::get('/client/demo/admin/students/create', function () {
-    return view('client.admin.students-create');
-})->name('client.admin.students.create');
-Route::get('/client/demo/admin/students/{id}', function ($id) {
-    return view('client.admin.students-detail', ['id' => $id]);
-})->name('client.admin.students.detail');
-use App\Http\Controllers\StudentController;
-Route::post('/client/demo/admin/students', [StudentController::class, 'store'])->name('client.admin.students.store');
-Route::delete('/client/demo/admin/students/{id}', [StudentController::class, 'destroy'])->name('client.admin.students.destroy');
-Route::get('/client/demo/admin/students/{id}/edit', [StudentController::class, 'edit'])->name('client.admin.students.edit');
-Route::put('/client/demo/admin/students/{id}', [StudentController::class, 'update'])->name('client.admin.students.update');
-use App\Http\Controllers\AttendanceRecapController;
-Route::get('/client/demo/admin/attendance-recap', [AttendanceRecapController::class, 'index'])->name('client.admin.attendance.recap');
-
-// ==========================================
-// RUTE JADWAL (Orang B)
-// ==========================================
-use App\Http\Controllers\ScheduleController;
-Route::get('/client/demo/admin/schedules/create', [ScheduleController::class, 'create'])->name('client.admin.schedules.create');
-Route::get('/client/demo/admin/schedules', [ScheduleController::class, 'index'])->name('client.admin.schedules');
-Route::post('/client/demo/admin/schedules', [ScheduleController::class, 'store'])->name('client.admin.schedules.store');
-use App\Http\Controllers\AttendanceController;
-Route::get('/client/demo/admin/attendance/{scheduleId}', [AttendanceController::class, 'create'])->name('client.admin.attendance');
-Route::post('/client/demo/admin/attendance/{scheduleId}', [AttendanceController::class, 'store'])->name('client.admin.attendance.store');

@@ -2,28 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToClient;
+use App\Models\Concerns\BelongsToTenantTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SchoolClass extends Model
 {
-    use HasFactory, BelongsToClient;
+    use HasFactory, BelongsToTenantTrait;
 
     protected $table = 'classes';
 
     protected $fillable = [
-        'client_id', 'name', 'academic_year', 'level', 'homeroom_teacher_id',
+        'tenant_id', 'name',
     ];
 
-    public function students(): BelongsToMany
+    public function students(): HasMany
     {
-        return $this->belongsToMany(Student::class, 'class_student')
-                    ->withPivot(['academic_year'])
-                    ->withTimestamps();
+        return $this->hasMany(Student::class, 'class_id');
     }
 
     public function schedules(): HasMany

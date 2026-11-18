@@ -9,5 +9,12 @@ class Subject extends Model
 {
     use BelongsToTenantTrait;
 
-    protected $fillable = ['name'];
+    protected $table = 'subjects';
+
+    protected $fillable = ['tenant_id', 'name'];
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'subject_id');
+    }
 }

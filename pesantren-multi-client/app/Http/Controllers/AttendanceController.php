@@ -11,49 +11,47 @@ class AttendanceController extends Controller
 {
     public function create($scheduleId)
     {
-        // Ambil data jadwal beserta relasinya
-        $schedule = Schedule::with(['classes', 'subjects', 'teacher'])->findOrFail($scheduleId);
-        
-        // Ambil santri aktif di kelas tersebut
+        $schedule = Schedule::with(['classRoom', 'subject', 'teacher'])->findOrFail($scheduleId);
+
         $students = Student::where('class_id', $schedule->class_id)
             ->where('status', 'active')
             ->orderBy('full_name')
             ->get();
-            
-        $date = now()->format('Y-m-d');
-        
-        // Cek apakah absensi hari ini sudah pernah diisi (untuk ditampilkan di form)
+
+        $date = request('date', now()->format('Y-m-d'));
+
         $existingAttendances = AcademicAttendance::where('schedule_id', $scheduleId)
             ->where('date', $date)
-            ->get()
-            ->keyBy('student_id');
+            ->get()->keyBy('student_id');
 
         return view('client.admin.attendance', compact('schedule', 'students', 'date', 'existingAttendances'));
     }
 
     public function store(Request $request, $scheduleId)
     {
-        $schedule = Schedule::findOrFail($scheduleId);
-        $date = now()->format('Y-m-d');
-        
-        // Data absensi dikirim dalam bentuk array: attendance[student_id][status]
-        $attendances = $request->input('attendance', []);
+        $request->validate([
+            'date' => 'required|date',
+            'attendance' => 'required|array',
+            'attendance.*.status' => 'required|in:hadir,sakit,izin,alpa',
+        ]);
 
-        foreach ($attendances as $studentId => $data) {
+        $schedule = Schedule::findOrFail($scheduleId);
+
+        foreach ($request->attendance as $studentId => $data) {
             AcademicAttendance::updateOrCreate(
                 [
                     'schedule_id' => $scheduleId,
                     'student_id' => $studentId,
-                    'date' => $date,
+                    'date' => $request->date,
                 ],
                 [
                     'status' => $data['status'],
                     'note' => $data['note'] ?? null,
-                    'tenant_id' => 1, // Hardcode sementara untuk testing
                 ]
             );
         }
 
-        return redirect('/client/demo/admin/attendance/' . $scheduleId)->with('success', 'Absensi berhasil disimpan pada ' . now()->format('H:i') . ' WIB.');
+        return redirect()->route('client.admin.attendance', $scheduleId)
+            ->with('success', 'Absensi tersimpan (' . now()->format('H:i') . ' WIB).');
     }
 }

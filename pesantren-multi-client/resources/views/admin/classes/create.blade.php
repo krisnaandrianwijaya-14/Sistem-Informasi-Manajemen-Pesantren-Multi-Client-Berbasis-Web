@@ -1,18 +1,15 @@
-﻿<x-app-layout>
-    <div class="p-6 max-w-lg">
-        <h1 class="text-2xl font-bold mb-4">Tambah Kelas Baru</h1>
-        <form action="{{ route('admin.classes.store') }}" method="POST">
-            @csrf
-            <div class="mb-4">
-                <label class="block mb-1">Nama Kelas</label>
-                <input type="text" name="name" class="w-full border p-2 rounded" required placeholder="Contoh: Ula 1A">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Level (Opsional)</label>
-                <input type="text" name="level" class="w-full border p-2 rounded" placeholder="Contoh: Ula">
-            </div>
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
-            <a href="{{ route('admin.classes.index') }}" class="ml-2 text-gray-500">Batal</a>
-        </form>
-    </div>
-</x-app-layout>
+<x-layouts.admin title="Tambah Kelas">
+    @php $clientSlug = request()->route('client')?->slug ?? request()->route('client') ?? 'demo'; @endphp
+    <form action="{{ client_route('client.admin.classes.store', ['client' => $clientSlug]) }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+        @csrf
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Nama Kelas *</label>
+            <input type="text" name="name" value="{{ old('name') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
+            @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+        <div class="mt-6 flex gap-3">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan</button>
+            <a href="{{ client_route('client.admin.classes.index', ['client' => $clientSlug]) }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg text-sm font-bold">Batal</a>
+        </div>
+    </form>
+</x-layouts.admin>

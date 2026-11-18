@@ -1,6 +1,36 @@
-﻿<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-gray-100 p-6">
-<h1 class="text-2xl font-bold mb-4">Mata Pelajaran (Kitab)</h1>
-<a href="{{ route('client.admin.subjects.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">+ Tambah Mapel</a>
-<table class="w-full bg-white border"><thead class="bg-gray-200"><tr><th class="p-2 border">Kode</th><th class="p-2 border">Nama Kitab/Mapel</th></tr></thead><tbody>
-@foreach($subjects as $s)<tr><td class="p-2 border">{{ $s->code ?? '-' }}</td><td class="p-2 border">{{ $s->name }}</td></tr>@endforeach
-</tbody></table></body></html>
+<x-layouts.admin title="Mata Pelajaran">
+    @php $clientSlug = request()->route('client')?->slug ?? request()->route('client') ?? 'demo'; @endphp
+    <div class="mb-4">
+        <a href="{{ url('/client/' . $clientSlug . '/admin/subjects/create') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold">+ Tambah Mapel</a>
+    </div>
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{{ session('success') }}</div>
+    @endif
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Nama Mapel</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($subjects as $s)
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-sm font-medium">{{ $s->name }}</td>
+                    <td class="px-4 py-3 text-sm text-right space-x-2">
+                        <a href="{{ url('/client/' . $clientSlug . '/admin/subjects/' . $s->id . '/edit') }}" class="text-emerald-600 hover:underline">Edit</a>
+                        <form action="{{ url('/client/' . $clientSlug . '/admin/subjects/' . $s->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus mapel ini?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="2" class="px-4 py-8 text-center text-gray-500">Belum ada data mapel.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4">{{ $subjects->links() }}</div>
+</x-layouts.admin>

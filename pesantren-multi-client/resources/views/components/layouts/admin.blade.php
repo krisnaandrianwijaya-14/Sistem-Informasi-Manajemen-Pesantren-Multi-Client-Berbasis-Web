@@ -10,7 +10,12 @@
     @livewireStyles
 </head>
 <body class="bg-gray-100 flex h-screen overflow-hidden">
-    <!-- SIDEBAR -->
+    @php
+        $clientSlug = request()->route('client')?->slug
+            ?? request()->route('client')
+            ?? auth()->user()?->defaultClientSlug()
+            ?? 'demo';
+    @endphp
     <aside class="w-64 bg-emerald-700 text-white flex flex-col h-full shadow-lg z-20">
         <div class="h-16 flex items-center px-6 border-b border-emerald-600">
             <div class="flex items-center gap-3">
@@ -19,44 +24,40 @@
             </div>
         </div>
         <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-            <p class="px-3 text-xs font-semibold text-emerald-300 uppercase tracking-wider mb-2">Platform Admin</p>
-            
-            <a href="{{ url('/client/demo/admin/dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*dashboard*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="font-medium">Dashboard</span>
-            </a>
-
-            <a href="{{ url('/client/demo/admin/students') }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*students*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <p class="px-3 text-xs font-semibold text-emerald-300 uppercase tracking-wider mb-2">Menu</p>
+            <a href="{{ client_route('client.admin.students.index', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*students*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
                 <span class="font-medium">Data Santri</span>
-            </a>            
-            <!-- Menu Jadwal Pelajaran -->
-            <a href="{{ url('/client/demo/admin/schedules') }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*schedules*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </a>
+            <a href="{{ client_route('client.admin.teachers.index', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*teachers*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
+                <span class="font-medium">Data Guru</span>
+            </a>
+            <a href="{{ client_route('client.admin.classes.index', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*classes*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
+                <span class="font-medium">Data Kelas</span>
+            </a>
+            <a href="{{ client_route('client.admin.subjects.index', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*subjects*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
+                <span class="font-medium">Mata Pelajaran</span>
+            </a>
+            <a href="{{ client_route('client.admin.schedules.index', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*schedules*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
                 <span class="font-medium">Jadwal Pelajaran</span>
-            </a>            
-            <!-- Menu Rekap Absensi -->
-            <a href="{{ url('/client/demo/admin/attendance-recap') }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*attendance-recap*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </a>
+            <a href="{{ client_route('client.admin.attendance.recap', ['client' => $clientSlug]) }}" class="flex items-center gap-3 px-3 py-2.5 {{ request()->is('*attendance-recap*') ? 'bg-emerald-800 text-white' : 'text-emerald-100 hover:bg-emerald-600' }} rounded-lg">
                 <span class="font-medium">Rekap Absensi</span>
             </a>
-            <!-- Menu lain bisa ditambahkan di sini -->
         </div>
         <div class="h-16 border-t border-emerald-600 flex items-center px-6 gap-3 bg-emerald-800">
             <div class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center font-bold">A</div>
             <div>
-                <p class="text-sm font-bold leading-tight">Admin Test</p>
+                <p class="text-sm font-bold leading-tight">{{ auth()->user()->name ?? 'Admin' }}</p>
                 <p class="text-xs text-emerald-300">Pengelola Pesantren</p>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8 z-10">
             <h1 class="text-xl font-bold text-gray-800">{{ $title ?? 'Dashboard' }}</h1>
             <div class="flex items-center gap-4">
-                <a href="#" class="text-sm font-semibold text-gray-600 hover:text-red-500">Logout</a>
+                <a href="{{ route('logout.get') }}" class="text-sm font-semibold text-gray-600 hover:text-red-500">Logout</a>
             </div>
         </header>
         <div class="flex-1 overflow-y-auto p-8">

@@ -9,20 +9,28 @@ class Schedule extends Model
 {
     use BelongsToTenantTrait;
 
-    protected $fillable = ['class_id', 'subject_id', 'teacher_id', 'day', 'start_time', 'end_time'];
+    protected $fillable = [
+        'class_id', 'subject_id', 'teacher_id',
+        'day', 'start_time', 'end_time'
+    ];
 
-    public function classes()
+    public function classRoom()
     {
-        return $this->belongsTo(Classes::class, 'class_id');
+        return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
-    public function subjects()
+    public function subject()
     {
         return $this->belongsTo(Subject::class, 'subject_id');
     }
 
     public function teacher()
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsTo(Teacher::class, 'teacher_id');
+    }
+
+    public function academicAttendances()
+    {
+        return $this->hasMany(AcademicAttendance::class, 'schedule_id');
     }
 }

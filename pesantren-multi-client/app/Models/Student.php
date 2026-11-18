@@ -17,8 +17,18 @@ class Student extends Model
         'father_name', 'mother_name', 'phone_number', 'address'
     ];
 
-    public function classes()
+    protected $casts = [
+        'birth_date' => 'date',
+        'deleted_at' => 'datetime',
+    ];
+
+    public function classRoom()
     {
-        return $this->belongsTo(Classes::class, 'class_id');
+        return $this->belongsTo(SchoolClass::class, 'class_id');
+    }
+
+    public function academicAttendances()
+    {
+        return $this->hasMany(AcademicAttendance::class, 'student_id');
     }
 }
