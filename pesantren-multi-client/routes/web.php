@@ -63,3 +63,13 @@ Route::middleware('auth:sanctum')->prefix('permits')->group(function () {
     Route::post('/depart',   [PermitController::class, 'depart']);
     Route::post('/report',   [PermitController::class, 'report']);
 });
+
+use App\Http\Controllers\ScanController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/kasir', [ScanController::class, 'kasirPage'])->name('kasir');
+    Route::post('/kasir/lookup', [ScanController::class, 'lookup'])->name('kasir.lookup');
+    Route::post('/kasir/bayar', [ScanController::class, 'bayar'])->name('kasir.bayar');
+    Route::get('/kartu/{student}', [ScanController::class, 'kartu'])->name('kartu');
+});
+require __DIR__.'/field_ops.php';
