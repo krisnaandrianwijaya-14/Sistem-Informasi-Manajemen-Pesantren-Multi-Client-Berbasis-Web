@@ -3645,3 +3645,25 @@ into your web browser: <span class="break-all" style="box-sizing: border-box; fo
 #40 D:/ServBay/www/pesantren-multi-client/artisan(16): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
 #41 {main}
 "} 
+[2026-11-19 16:07:55] local.ERROR: syntax error, unexpected token "<<", expecting end of file {"exception":"[object] (ParseError(code: 0): syntax error, unexpected token \"<<\", expecting end of file at D:/ServBay/www/pesantren-multi-client/app/Modules/Academic/AcademicServiceProvider.php:5)
+[stacktrace]
+#0 D:/ServBay/www/pesantren-multi-client/vendor/composer/ClassLoader.php(427): Composer/Autoload/{closure}('D://ServBay//www//...')
+#1 [internal function]: Composer/Autoload/ClassLoader->loadClass('App//Modules//Aca...')
+#2 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(52): class_exists('App//Modules//Aca...')
+#3 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(34): Illuminate/Foundation/Bootstrap/RegisterProviders->mergeAdditionalProviders(Object(Illuminate/Foundation/Application))
+#4 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(350): Illuminate/Foundation/Bootstrap/RegisterProviders->bootstrap(Object(Illuminate/Foundation/Application))
+#5 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(510): Illuminate/Foundation/Application->bootstrapWith(Array)
+#6 D:/ServBay/www/pesantren-multi-client/storage/framework/lsp-de67e87a839e09d1.php(5): Illuminate/Foundation/Console/Kernel->bootstrap()
+#7 {main}
+"} 
+[2026-11-19 16:07:56] local.ERROR: syntax error, unexpected token "<<", expecting end of file {"exception":"[object] (ParseError(code: 0): syntax error, unexpected token \"<<\", expecting end of file at D:/ServBay/www/pesantren-multi-client/app/Modules/Academic/AcademicServiceProvider.php:5)
+[stacktrace]
+#0 D:/ServBay/www/pesantren-multi-client/vendor/composer/ClassLoader.php(427): Composer/Autoload/{closure}('D://ServBay//www//...')
+#1 [internal function]: Composer/Autoload/ClassLoader->loadClass('App//Modules//Aca...')
+#2 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(52): class_exists('App//Modules//Aca...')
+#3 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(34): Illuminate/Foundation/Bootstrap/RegisterProviders->mergeAdditionalProviders(Object(Illuminate/Foundation/Application))
+#4 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(350): Illuminate/Foundation/Bootstrap/RegisterProviders->bootstrap(Object(Illuminate/Foundation/Application))
+#5 D:/ServBay/www/pesantren-multi-client/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(510): Illuminate/Foundation/Application->bootstrapWith(Array)
+#6 D:/ServBay/www/pesantren-multi-client/storage/framework/lsp-6ca37a2c29df039e.php(5): Illuminate/Foundation/Console/Kernel->bootstrap()
+#7 {main}
+"} 
