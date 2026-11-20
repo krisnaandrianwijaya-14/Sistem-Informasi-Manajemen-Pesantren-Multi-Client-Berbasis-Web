@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureRedirects();
     }
 
     /**
@@ -50,6 +53,40 @@ class FortifyServiceProvider extends ServiceProvider
     }
 
     /**
+     * Configure custom login redirects based on user role / tenant.
+     */
+    private function configureRedirects(): void
+    {
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                /** @var \App\Models\User $user */
+                $user = Auth::user();
+
+                // 1. Admin / Staf Platform Pusat
+                if (in_array($user->role, ['platform_admin', 'finance_admin', 'support_specialist', 'saas_auditor'])) {
+                    return redirect()->to(route('admin.dashboard'));
+                }
+
+                // 2. User Pesantren (Admin Pesantren atau Guru)
+                $client = $user->clients()->first();
+
+                if ($client) {
+                    $tenantRole = $client->pivot->role ?? $user->role;
+
+                    if ($tenantRole === 'guru' || $user->role === 'guru') {
+                        return redirect()->to("/{$client->slug}/guru/dashboard");
+                    }
+
+                    return redirect()->to("/{$client->slug}/dashboard");
+                }
+
+                return redirect()->to('/');
+            }
+        });
+    }
+
+    /**
      * Configure rate limiting.
      */
     private function configureRateLimiting(): void
@@ -63,6 +100,5 @@ class FortifyServiceProvider extends ServiceProvider
 
             return Limit::perMinute(5)->by($throttleKey);
         });
-
     }
 }

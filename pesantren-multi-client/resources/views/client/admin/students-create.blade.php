@@ -1,6 +1,6 @@
 <x-layouts.admin title="Tambah Santri">
     <div class="max-w-4xl mx-auto">
-        
+
         <!-- Pesan Error Validasi -->
         @if ($errors->any())
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
@@ -19,13 +19,13 @@
                 <h2 class="text-2xl font-bold text-gray-800">Tambah Santri Baru</h2>
                 <p class="text-sm text-gray-500 mt-1">Isi formulir di bawah ini dengan lengkap.</p>
             </div>
-            <a href="{{ url('/client/demo/admin/students') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali</a>
+            <a href="{{ client_route('students.index') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali</a>
         </div>
 
         <!-- Form Standar Laravel -->
-        <form action="{{ url('/client/demo/admin/students') }}" method="POST" class="space-y-6">
+        <form action="{{ client_route('students.store') }}" method="POST" class="space-y-6">
             @csrf
-            
+
             <!-- BAGIAN 1: DATA PRIBADI -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-gray-50 px-6 py-3 border-b border-gray-100">
@@ -70,9 +70,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Kelas Madrasah</label>
                         <select name="class_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
                             <option value="">Pilih Kelas</option>
-                            <!-- Pastikan Anda mengirim data $classes dari controller jika menggunakan standar form, atau hardcode sementara -->
-                            <option value="1" {{ old('class_id') == '1' ? 'selected' : '' }}>Kelas 1A - Ula</option>
-                            <option value="2" {{ old('class_id') == '2' ? 'selected' : '' }}>Kelas 2B - Wustho</option>
+                            @if(isset($classes) && $classes->count())
+                                @foreach($classes as $class)
+                                    <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
+                                @endforeach
+                            @else
+                                <option value="1" {{ old('class_id') == '1' ? 'selected' : '' }}>Kelas 1A - Ula</option>
+                                <option value="2" {{ old('class_id') == '2' ? 'selected' : '' }}>Kelas 2B - Wustho</option>
+                            @endif
                         </select>
                     </div>
                     <div>
@@ -113,7 +118,7 @@
 
             <!-- Action Buttons -->
             <div class="flex justify-end gap-3 pb-8">
-                <a href="{{ url('/client/demo/admin/students') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Batal</a>
+                <a href="{{ client_route('students.index') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Batal</a>
                 <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-sm">Simpan Data Santri</button>
             </div>
         </form>

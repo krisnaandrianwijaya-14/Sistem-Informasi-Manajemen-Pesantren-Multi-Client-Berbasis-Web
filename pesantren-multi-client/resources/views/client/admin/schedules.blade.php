@@ -5,7 +5,7 @@
                 <h2 class="text-2xl font-bold text-gray-800">Jadwal Pelajaran</h2>
                 <p class="text-sm text-gray-500 mt-1">Atur jadwal kelas dan guru pengampu.</p>
             </div>
-            <a href="/client/demo/admin/schedules/create" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm" style="text-decoration: none;">
+            <a href="{{ client_route('schedules.create') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm" style="text-decoration: none;">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Tambah Jadwal
             </a>
@@ -38,7 +38,14 @@
                         <td class="px-6 py-4 text-sm text-gray-800">{{ $schedule->subjects->name ?? '-' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-800">{{ $schedule->teacher->name ?? '-' }}</td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{{ url('/client/demo/admin/attendance/' . $schedule->id) }}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-md text-xs font-bold transition-colors">Isi Absensi</a>
+                            @php
+                                $attendanceUrl = \Illuminate\Support\Facades\Route::has('client.attendances.create')
+                                    ? client_route('attendances.create', $schedule->id)
+                                    : (\Illuminate\Support\Facades\Route::has('client.attendance.create')
+                                        ? client_route('attendance.create', $schedule->id)
+                                        : client_route('guru.attendances.create', $schedule->id));
+                            @endphp
+                            <a href="{{ $attendanceUrl }}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-md text-xs font-bold transition-colors">Isi Absensi</a>
                         </td>
                     </tr>
                     @empty

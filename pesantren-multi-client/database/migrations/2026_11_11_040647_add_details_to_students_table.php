@@ -9,22 +9,61 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->string('birth_place')->nullable()->after('gender');
-            $table->date('birth_date')->nullable()->after('birth_place');
-            $table->foreignId('class_id')->nullable()->after('birth_date');
-            $table->string('dormitory_name')->nullable()->after('class_id');
-            $table->string('room_number')->nullable()->after('dormitory_name');
-            $table->string('father_name')->nullable()->after('room_number');
-            $table->string('mother_name')->nullable()->after('father_name');
-            $table->string('phone_number')->nullable()->after('mother_name');
-            $table->text('address')->nullable()->after('phone_number');
+            if (!Schema::hasColumn('students', 'gender')) {
+                $table->string('gender', 20)->nullable();
+            }
+            if (!Schema::hasColumn('students', 'birth_place')) {
+                $table->string('birth_place')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'birth_date')) {
+                $table->date('birth_date')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'class_id')) {
+                $table->foreignId('class_id')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'dormitory_name')) {
+                $table->string('dormitory_name')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'room_number')) {
+                $table->string('room_number')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'father_name')) {
+                $table->string('father_name')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'mother_name')) {
+                $table->string('mother_name')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'phone_number')) {
+                $table->string('phone_number')->nullable();
+            }
+            if (!Schema::hasColumn('students', 'address')) {
+                $table->text('address')->nullable();
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->dropColumn(['birth_place', 'birth_date', 'class_id', 'dormitory_name', 'room_number', 'father_name', 'mother_name', 'phone_number', 'address']);
+            $columns = array_filter(
+                [
+                    'gender',
+                    'birth_place',
+                    'birth_date',
+                    'class_id',
+                    'dormitory_name',
+                    'room_number',
+                    'father_name',
+                    'mother_name',
+                    'phone_number',
+                    'address',
+                ],
+                fn ($col) => Schema::hasColumn('students', $col)
+            );
+
+            if (!empty($columns)) {
+                $table->dropColumn($columns);
+            }
         });
     }
 };

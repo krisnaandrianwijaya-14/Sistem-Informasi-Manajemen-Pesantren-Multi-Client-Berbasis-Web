@@ -2,26 +2,26 @@
 
 namespace App\Modules\Platform\Http\Middleware;
 
+use App\Models\Client;
+use App\Models\User;
+use App\Modules\Platform\Support\ClientContext;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Client;
-use App\Modules\Platform\Support\ClientContext;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use Illuminate\Support\Facades\URL;
+use Symfony\Component\HttpFoundation\Response;
 
 class SetClientContext
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $slug = $request->route('client');
+        $routeClient = $request->route('client');
+        $slug = $routeClient instanceof Client ? $routeClient->slug : $routeClient;
 
         if ($slug) {
             $client = Client::where('slug', $slug)->where('status', 'active')->firstOrFail();
 
-            // Ini kode yang tadi merah di VS Code Anda.
-            // Di Laravel, Auth::check() dan Auth::user() adalah fungsi yang 100% valid.
-            /** @var \App\Models\User $user */
+            /** @var \App\Models\User|null $user */
             $user = Auth::user();
 
             if (!$user || !$user->hasAccessToClient($client->id)) {
@@ -29,6 +29,10 @@ class SetClientContext
             }
 
             app(ClientContext::class)->set($client);
+
+            // Isi otomatis parameter {client} untuk helper route() dan hapus dari parameter controller
+            URL::defaults(['client' => $client->slug]);
+            $request->route()->forgetParameter('client');
         }
 
         return $next($request);

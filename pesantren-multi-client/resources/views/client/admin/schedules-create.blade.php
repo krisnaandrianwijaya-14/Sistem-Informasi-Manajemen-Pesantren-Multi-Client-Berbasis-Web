@@ -13,10 +13,10 @@
                 <h2 class="text-2xl font-bold text-gray-800">Tambah Jadwal Pelajaran</h2>
                 <p class="text-sm text-gray-500 mt-1">Atur jadwal kelas dan guru pengampu.</p>
             </div>
-            <a href="{{ url('/client/demo/admin/schedules') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali</a>
+            <a href="{{ client_route('schedules.index') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali</a>
         </div>
 
-        <form action="{{ url('/client/demo/admin/schedules') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
+        <form action="{{ client_route('schedules.store') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -40,30 +40,30 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
                     <select name="class_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" required>
-    <option value="">Pilih Kelas</option>
-    <option value="1">Kelas 1A - Ula</option>
-    <option value="2">Kelas 2B - Wustho</option>
-</select>
+                        <option value="">Pilih Kelas</option>
+                        <option value="1" {{ old('class_id') == 1 ? 'selected' : '' }}>Kelas 1A - Ula</option>
+                        <option value="2" {{ old('class_id') == 2 ? 'selected' : '' }}>Kelas 2B - Wustho</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Mata Pelajaran</label>
                     <select name="subject_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" required>
-    <option value="">Pilih Mapel</option>
-    <option value="1">Fiqih - Safinatun Najah</option>
-    <option value="2">Bahasa Arab - Jurumiyah</option>
-</select>
+                        <option value="">Pilih Mapel</option>
+                        <option value="1" {{ old('subject_id') == 1 ? 'selected' : '' }}>Fiqih - Safinatun Najah</option>
+                        <option value="2" {{ old('subject_id') == 2 ? 'selected' : '' }}>Bahasa Arab - Jurumiyah</option>
+                    </select>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Guru Pengampu</label>
                     <select name="teacher_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" required>
-    <option value="">Pilih Guru</option>
-    <option value="1">Ustadz Ahmad</option>
-</select>
+                        <option value="">Pilih Guru</option>
+                        <option value="1" {{ old('teacher_id') == 1 ? 'selected' : '' }}>Ustadz Ahmad</option>
+                    </select>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <a href="{{ url('/client/demo/admin/schedules') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Batal</a>
+                <a href="{{ client_route('schedules.index') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Batal</a>
                 <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-sm">Simpan Jadwal</button>
             </div>
         </form>

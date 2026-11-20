@@ -1,30 +1,37 @@
 <?php
 
-if (! function_exists('client_route')) {
-    /**
-     * Generate route URL dengan parameter client otomatis.
-     *
-     * @param string $name
-     * @param array $parameters
-     * @return string
-     */
-    function client_route(string $name, array $parameters = []): string
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
+
+if (!function_exists('client_route')) {
+    function client_route(string $name, mixed $parameters = [], bool $absolute = true): string
     {
-        // Ambil client dari route saat ini
-        $client = request()->route('client');
+        $cleanName = str_starts_with($name, 'client.') ? substr($name, 7) : $name;
 
-        if ($client) {
-            $parameters['client'] = $client instanceof \App\Models\Client
-                ? $client
-                : $client;
+        $candidates = [
+            'client.' . $cleanName,
+        ];
+
+        if (str_starts_with($cleanName, 'admin.')) {
+            $candidates[] = 'client.' . substr($cleanName, 6);
         }
 
-        // Fallback ke defaultClientSlug user
-        if (! isset($parameters['client']) || ! $parameters['client']) {
-            $user = auth()->user();
-            $parameters['client'] = $user?->defaultClientSlug() ?? 'demo';
+        $routeName = collect($candidates)->first(fn ($candidate) => Route::has($candidate))
+            ?? ('client.' . $cleanName);
+
+if (is_array($parameters) && !isset($parameters['client'])) {
+            /** @var \App\Models\User|null $user */
+            $user = Auth::user();
+
+            $defaultClient = URL::getDefaultParameters()['client']
+                ?? $user?->defaultClientSlug();
+
+            if ($defaultClient) {
+                $parameters = array_merge(['client' => $defaultClient], $parameters);
+            }
         }
 
-        return route($name, $parameters);
+        return route($routeName, $parameters, $absolute);
     }
 }

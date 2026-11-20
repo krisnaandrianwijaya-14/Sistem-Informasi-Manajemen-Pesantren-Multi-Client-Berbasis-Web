@@ -8,6 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+Schema::disableForeignKeyConstraints();
+
         Schema::dropIfExists('schedules');
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
@@ -20,6 +22,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void

@@ -9,15 +9,23 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-800">Presensi Harian Santri</h2>
                     <div class="flex gap-4 text-sm text-gray-500 mt-1">
-                        <p>Mapel: <span class="font-bold text-gray-800">{{ $schedule->subject->name ?? '-' }}</span></p>
-                        <p>Kelas: <span class="font-bold text-gray-800">{{ $schedule->classRoom->name ?? '-' }}</span></p>
+                        <p>Mapel: <span class="font-bold text-gray-800">{{ $schedule->subjects->name ?? $schedule->subject->name ?? '-' }}</span></p>
+                        <p>Kelas: <span class="font-bold text-gray-800">{{ $schedule->classes->name ?? $schedule->classRoom->name ?? '-' }}</span></p>
                         <p>Tanggal: <span class="font-bold text-gray-800">{{ \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y') }}</span></p>
                     </div>
                 </div>
-                <a href="{{ client_route('client.admin.schedules.index') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali ke Jadwal</a>
+                <a href="{{ client_route('schedules.index') }}" class="text-gray-500 hover:text-gray-800 text-sm font-medium">&larr; Kembali ke Jadwal</a>
             </div>
 
-            <form action="{{ client_route('client.admin.attendance.store', $schedule->id) }}" method="POST">
+            @php
+                $storeAttendanceUrl = \Illuminate\Support\Facades\Route::has('client.attendance.store')
+                    ? client_route('attendance.store', $schedule->id)
+                    : (\Illuminate\Support\Facades\Route::has('client.attendances.store')
+                        ? client_route('attendances.store', $schedule->id)
+                        : client_route('guru.attendances.store', $schedule->id));
+            @endphp
+
+            <form action="{{ $storeAttendanceUrl }}" method="POST">
                 @csrf
                 <input type="hidden" name="date" value="{{ $date }}">
                 <div class="overflow-x-auto">

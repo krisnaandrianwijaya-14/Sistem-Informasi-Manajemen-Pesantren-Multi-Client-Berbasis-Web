@@ -6,7 +6,7 @@ use App\Modules\Platform\Support\PortalRoutes;
 // app/Modules/Platform/routes/web.php
 
 // 1. Rute Publik (Landing Page SiSantri & Profil Pesantren)
-PortalRoutes::public(function () {
+Route::middleware('web')->group(function () {
     // Landing Page Pusat
     Route::get('/', fn() => view('platform::public.landing'))->name('home');
 

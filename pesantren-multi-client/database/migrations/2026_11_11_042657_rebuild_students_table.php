@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         // Hapus tabel lama yang strukturnya salah
         Schema::dropIfExists('students');
 
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void

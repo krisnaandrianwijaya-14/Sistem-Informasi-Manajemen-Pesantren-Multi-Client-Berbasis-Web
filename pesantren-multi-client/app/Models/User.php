@@ -69,5 +69,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->clients()->where('client_id', $clientId)->exists();
     }
+
+    public function defaultClientSlug(): ?string
+    {
+        $contextClient = app(\App\Modules\Platform\Support\ClientContext::class)->get();
+
+        if ($contextClient) {
+            return $contextClient->slug;
+        }
+
+        return $this->clients()->first()?->slug
+            ?? \App\Models\Client::where('status', 'active')->value('slug');
+    }
 }
 

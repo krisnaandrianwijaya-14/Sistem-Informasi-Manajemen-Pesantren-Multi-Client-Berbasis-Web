@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->scoped(\App\Modules\Platform\Support\ClientContext::class);
+$this->app->scoped(\App\Modules\Platform\Support\ClientContext::class);
+    $this->app->alias(\App\Modules\Platform\Support\ClientContext::class, 'App\Support\ClientContext');
+    require_once app_path('Helpers/client_route.php');
+
     }
 
     /**

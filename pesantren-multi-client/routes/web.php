@@ -1,30 +1,33 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Modules\Platform\Support\PortalRoutes;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        $user = auth()->user();
+Route::middleware(['auth'])->get('/dashboard', function () {
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
 
-        // Jika dia staf platform, lempar ke Admin Dashboard
-        if (in_array($user->role, ['platform_admin', 'finance_admin', 'support_specialist', 'saas_auditor'])) {
-            return redirect()->route('admin.dashboard');
+    if (in_array($user->role, ['platform_admin', 'finance_admin', 'support_specialist', 'saas_auditor'])) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    $client = $user->clients()->first();
+
+    if ($client) {
+        $tenantRole = $client->pivot->role ?? $user->role;
+
+        if ($tenantRole === 'guru' || $user->role === 'guru') {
+            return redirect("/{$client->slug}/guru/dashboard");
         }
 
-        // Jika dia user biasa (Admin Pesantren), cari pesantrennya
-        $client = $user->clients()->first();
+        return redirect("/{$client->slug}/dashboard");
+    }
 
-        if ($client) {
-            return redirect("/{$client->slug}/dashboard"); // Lempar ke halaman dummy
-        }
-
-        return redirect('/');
-    })->name('dashboard');
-});
+    return redirect('/');
+})->name('dashboard');
 
 require __DIR__.'/settings.php';
 
@@ -36,10 +39,19 @@ PortalRoutes::admin(function () {
     Route::get('/audit-logs', fn() => view('platform::audit'))->name('audit.index');
 });
 
-// Rute sementara untuk Dashboard Pesantren (Dikerjakan Orang B & C nanti)
+// Rute Dashboard Admin Pesantren, Akademik & Guru
 PortalRoutes::client(function () {
-    Route::get('/dashboard', function () {
-        $client = app(\App\Modules\Platform\Support\ClientContext::class)->get();
-        return view('platform::tenant-dummy', ['client' => $client]);
-    })->name('dashboard');
+    require __DIR__.'/client.php';
+
+    Route::prefix('guru')->name('guru.')->group(function () {
+        require __DIR__.'/guru.php';
+    });
 });
+
+Route::middleware(['auth'])->get('/logout', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login');
+})->name('logout.get');

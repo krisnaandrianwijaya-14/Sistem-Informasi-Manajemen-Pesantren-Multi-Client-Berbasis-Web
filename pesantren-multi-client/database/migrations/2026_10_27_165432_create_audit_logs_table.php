@@ -8,13 +8,32 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('audit_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('action'); // e.g., 'create_tenant', 'update_module'
-            $table->string('description');
-            $table->string('ip_address')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('audit_logs')) {
+            Schema::create('audit_logs', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->string('action');
+                $table->string('description');
+                $table->string('ip_address')->nullable();
+                $table->timestamps();
+            });
+
+            return;
+        }
+
+        Schema::table('audit_logs', function (Blueprint $table) {
+            if (!Schema::hasColumn('audit_logs', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable();
+            }
+            if (!Schema::hasColumn('audit_logs', 'action')) {
+                $table->string('action')->nullable();
+            }
+            if (!Schema::hasColumn('audit_logs', 'description')) {
+                $table->string('description')->nullable();
+            }
+            if (!Schema::hasColumn('audit_logs', 'ip_address')) {
+                $table->string('ip_address')->nullable();
+            }
         });
     }
 

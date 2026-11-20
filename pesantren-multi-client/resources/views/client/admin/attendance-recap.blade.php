@@ -8,7 +8,7 @@
         </div>
 
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
-            <form action="{{ url('/client/demo/admin/attendance-recap') }}" method="GET" class="flex items-end gap-4">
+           <form action="{{ url()->current() }}" method="GET" class="flex items-end gap-4">
                 <div class="flex-1 max-w-xs">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Filter Kelas</label>
                     <select name="class_id" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500">

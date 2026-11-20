@@ -9,12 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
-            $table->string('code')->nullable();
-            $table->string('name');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->foreignId('tenant_id')->nullable()->constrained('tenants')->cascadeOnDelete();
+    $table->unsignedBigInteger('client_id')->nullable()->default(1);
+    $table->string('name');
+    // ... biarkan kolom lain yang sudah ada di file ini ...
+    $table->timestamps();
+
+    $table->unique(['client_id', 'id']);
+});
     }
 
     public function down(): void

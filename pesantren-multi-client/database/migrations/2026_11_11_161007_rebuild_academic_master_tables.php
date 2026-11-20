@@ -8,6 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::dropIfExists('classes');
         Schema::dropIfExists('subjects');
 
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void

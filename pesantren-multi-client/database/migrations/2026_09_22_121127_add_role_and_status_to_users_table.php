@@ -6,18 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Default 'user', nanti kita set 'platform_admin' untuk Anda
-            $table->string('role')->default('user')->after('email');
+            $table->string('role', 32)->default('santri')->after('password');
+            $table->string('status', 16)->default('active')->after('role');
+            $table->index(['role', 'status']);
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropIndex(['role', 'status']);
+            $table->dropColumn(['role', 'status']);
         });
     }
 };
