@@ -22,6 +22,7 @@ Route::get('classes', [\App\Http\Controllers\Admin\SchoolClassController::class,
 Route::get('classes/create', [\App\Http\Controllers\Admin\SchoolClassController::class, 'create'])->name('classes.create');
 Route::post('classes', [\App\Http\Controllers\Admin\SchoolClassController::class, 'store'])->name('classes.store');
 Route::get('classes/{id}/edit', [\App\Http\Controllers\Admin\SchoolClassController::class, 'edit'])->name('classes.edit');
+Route::get('classes/{id}', [\App\Http\Controllers\Admin\SchoolClassController::class, 'show'])->name('classes.show');
 Route::put('classes/{id}', [\App\Http\Controllers\Admin\SchoolClassController::class, 'update'])->name('classes.update');
 Route::delete('classes/{id}', [\App\Http\Controllers\Admin\SchoolClassController::class, 'destroy'])->name('classes.destroy');
 

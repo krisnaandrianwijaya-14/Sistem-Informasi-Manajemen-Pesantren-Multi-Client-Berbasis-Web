@@ -45,14 +45,16 @@ class SchoolClassController extends Controller
             ->with('success', 'Kelas ditambahkan.');
     }
 
-    public function edit(string $id)
+    public function edit(...$args)
     {
+        $id = end($args);
         $class = SchoolClass::withoutGlobalScopes()->findOrFail($id);
         return view('admin.classes.edit', compact('class'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, ...$args)
     {
+        $id = end($args);
         $class = SchoolClass::withoutGlobalScopes()->findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:80',
@@ -64,10 +66,23 @@ class SchoolClassController extends Controller
             ->with('success', 'Kelas diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(...$args)
     {
+        $id = end($args);
         SchoolClass::withoutGlobalScopes()->findOrFail($id)->delete();
         return redirect(client_route('client.admin.classes.index'))
             ->with('success', 'Kelas dihapus.');
+    }
+
+    public function show(...$args)
+    {
+        $id = end($args);
+        $class = SchoolClass::withoutGlobalScopes()
+            ->with(['students' => function ($q) {
+                $q->withoutGlobalScopes()->orderBy('full_name');
+            }, 'schedules', 'homeroomTeacher'])
+            ->findOrFail($id);
+
+        return view('admin.classes.show', compact('class'));
     }
 }
