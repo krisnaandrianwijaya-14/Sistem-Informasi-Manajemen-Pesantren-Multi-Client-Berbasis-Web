@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToTenantTrait;
+use App\Models\Concerns\BelongsToClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SchoolClass extends Model
 {
-    use HasFactory, BelongsToTenantTrait;
+    use HasFactory, BelongsToClient;
 
     protected $table = 'classes';
 
     protected $fillable = [
-        'tenant_id', 'name',
+        'client_id', 'name', 'academic_year', 'level', 'homeroom_teacher_id',
     ];
 
     public function students(): HasMany

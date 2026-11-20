@@ -59,15 +59,16 @@ class DemoClientSeeder extends Seeder
         );
 
         // 4. Admin A
-        $adminA = User::updateOrCreate(
-            ['email' => 'admin@alhikmah.test'],
-            [
-                'name'     => 'Admin Al-Hikmah',
-                'password' => Hash::make('password'),
-                'role'     => 'admin_pesantren',
-                'status'   => 'active',
-            ]
-        );
+        $adminA = User::firstOrNew(['email' => 'admin@alhikmah.test']);
+        $adminA->fill([
+            'name' => 'Admin Al-Hikmah',
+            'role' => 'admin_pesantren',
+            'status' => 'active',
+        ]);
+        if (!$adminA->exists) {
+            $adminA->password = Hash::make('password');
+        }
+        $adminA->save();
 
         ClientUser::updateOrCreate(
             ['client_id' => $clientA->id, 'user_id' => $adminA->id],
@@ -75,15 +76,16 @@ class DemoClientSeeder extends Seeder
         );
 
         // 5. Admin B
-        $adminB = User::updateOrCreate(
-            ['email' => 'admin@alfalah.test'],
-            [
-                'name'     => 'Admin Al-Falah',
-                'password' => Hash::make('password'),
-                'role'     => 'admin_pesantren',
-                'status'   => 'active',
-            ]
-        );
+        $adminB = User::firstOrNew(['email' => 'admin@alfalah.test']);
+        $adminB->fill([
+            'name' => 'Admin Al-Falah',
+            'role' => 'admin_pesantren',
+            'status' => 'active',
+        ]);
+        if (!$adminB->exists) {
+            $adminB->password = Hash::make('password');
+        }
+        $adminB->save();
 
         ClientUser::updateOrCreate(
             ['client_id' => $clientB->id, 'user_id' => $adminB->id],
@@ -194,13 +196,15 @@ $this->command->info('✅ 20 santri dummy Client A dibuat.');
         // 12. Teachers — explicit client_id
         $teachers = collect();
         for ($i = 0; $i < 5; $i++) {
-            $teachers->push(Teacher::create([
-                'client_id'       => $clientA->id,
-                'name'            => 'Ust. ' . fake()->name(),
-                'employee_number' => 'GURU-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
-                'phone'           => '08' . fake()->numerify('##########'),
-                'status'          => 'active',
-            ]));
+            $employeeNumber = 'GURU-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT);
+            $teachers->push(Teacher::updateOrCreate(
+                ['client_id' => $clientA->id, 'employee_number' => $employeeNumber],
+                [
+                    'name'   => 'Ust. ' . fake()->name(),
+                    'phone'  => '08' . fake()->numerify('##########'),
+                    'status' => 'active',
+                ]
+            ));
         }
 
         // 13. Classes — explicit client_id

@@ -3,26 +3,25 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use App\Models\{Student, Bill, LeaveRequest, Attendance};
-use App\Policies\{StudentPolicy, BillPolicy, LeaveRequestPolicy, AttendancePolicy};
+use App\Contracts\TenantContext;
+
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-public function register(): void
-{
-    $this->app->scoped(
-        \App\Support\ClientContext::class,
-        fn (): \App\Support\ClientContext => new \App\Support\ClientContext,
-    );
-}
-public function boot(): void
-{
-    Gate::policy(Student::class, StudentPolicy::class);
-    Gate::policy(Bill::class, BillPolicy::class);
-    Gate::policy(LeaveRequest::class, LeaveRequestPolicy::class);
-    Gate::policy(Attendance::class, AttendancePolicy::class);
-}
+    public function register(): void
+    {
+        // Daftarkan TenantContext agar bisa dipanggil di Controller
+        $this->app->bind(TenantContext::class, function () {
+            return new class implements TenantContext {
+                public function id(): int
+                {
+                    return auth()->check() ? (auth()->user()->tenant_id ?? 1) : 1;
+                }
+            };
+        });
+    }
+
+    public function boot(): void
+    {
+        //
+    }
 }

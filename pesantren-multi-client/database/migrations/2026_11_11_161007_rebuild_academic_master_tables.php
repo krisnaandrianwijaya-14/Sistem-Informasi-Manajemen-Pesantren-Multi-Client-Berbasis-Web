@@ -8,22 +8,24 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::dropIfExists('classes');
-        Schema::dropIfExists('subjects');
+        // Ensure tables exist without dropping to avoid foreign‑key constraints
+        if (!Schema::hasTable('classes')) {
+            Schema::create('classes', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('tenant_id')->default(1);
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
 
-        Schema::create('classes', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('tenant_id')->default(1);
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('tenant_id')->default(1);
-            $table->string('name');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('subjects')) {
+            Schema::create('subjects', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('tenant_id')->default(1);
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

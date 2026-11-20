@@ -12,8 +12,8 @@ Route::get('/dashboard', function () {
 Route::get('students', [\App\Http\Controllers\Admin\StudentController::class, 'index'])->name('students.index');
 Route::get('students/create', [\App\Http\Controllers\Admin\StudentController::class, 'create'])->name('students.create');
 Route::post('students', [\App\Http\Controllers\Admin\StudentController::class, 'store'])->name('students.store');
-Route::get('students/{id}', [\App\Http\Controllers\Admin\StudentController::class, 'show'])->name('students.show');
 Route::get('students/{id}/edit', [\App\Http\Controllers\Admin\StudentController::class, 'edit'])->name('students.edit');
+Route::get('students/{id}', [\App\Http\Controllers\Admin\StudentController::class, 'show'])->name('students.show');
 Route::put('students/{id}', [\App\Http\Controllers\Admin\StudentController::class, 'update'])->name('students.update');
 Route::delete('students/{id}', [\App\Http\Controllers\Admin\StudentController::class, 'destroy'])->name('students.destroy');
 
@@ -51,3 +51,12 @@ Route::delete('schedules/{id}', [\App\Http\Controllers\Admin\ScheduleController:
 Route::get('attendance/{scheduleId}', [AttendanceController::class, 'create'])->name('attendance');
 Route::post('attendance/{scheduleId}', [AttendanceController::class, 'store'])->name('attendance.store');
 Route::get('attendance-recap', [AttendanceRecapController::class, 'index'])->name('attendance.recap');
+
+// ========== TEST ROUTE (darurat) ==========
+Route::get('test-detail/{id}', function ($id) {
+    $student = \App\Models\Student::withoutGlobalScopes()->find($id);
+    if (!$student) {
+        return "Santri ID {$id} TIDAK ADA di database. Total santri: " . \App\Models\Student::withTrashed()->count();
+    }
+    return "KETEMU: ID={$student->id} | NIS={$student->nis} | Nama={$student->full_name}";
+})->name('test.detail');

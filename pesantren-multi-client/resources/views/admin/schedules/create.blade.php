@@ -1,6 +1,6 @@
 <x-layouts.admin title="Tambah Jadwal">
     @php $clientSlug = request()->route('client')?->slug ?? request()->route('client') ?? 'demo'; @endphp
-    <form action="{{ client_route('client.admin.schedules.store', ['client' => $clientSlug]) }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+    <form action="{{ url('/client/' . $clientSlug . '/admin/schedules') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -32,9 +32,9 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Hari *</label>
-                <select name="day" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
+                <select name="day_of_week" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
                     @foreach(['senin','selasa','rabu','kamis','jumat','sabtu'] as $d)
-                        <option value="{{ $d }}" {{ old('day') === $d ? 'selected' : '' }}>{{ ucfirst($d) }}</option>
+                        <option value="{{ $d }}" {{ old('day_of_week') === $d ? 'selected' : '' }}>{{ ucfirst($d) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -46,10 +46,14 @@
                 <label class="block text-sm font-medium text-gray-700">Jam Selesai *</label>
                 <input type="time" name="end_time" value="{{ old('end_time') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
             </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Ruang (opsional)</label>
+                <input type="text" name="room" value="{{ old('room') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm">
+            </div>
         </div>
         <div class="mt-6 flex gap-3">
             <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan</button>
-            <a href="{{ client_route('client.admin.schedules.index', ['client' => $clientSlug]) }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg text-sm font-bold">Batal</a>
+            <a href="{{ url('/client/' . $clientSlug . '/admin/schedules') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg text-sm font-bold">Batal</a>
         </div>
     </form>
 </x-layouts.admin>

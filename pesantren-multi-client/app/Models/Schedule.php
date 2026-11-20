@@ -9,9 +9,11 @@ class Schedule extends Model
 {
     use BelongsToTenantTrait;
 
+    protected $table = 'schedules';
+
     protected $fillable = [
-        'class_id', 'subject_id', 'teacher_id',
-        'day', 'start_time', 'end_time'
+        'client_id', 'tenant_id', 'class_id', 'subject_id', 'teacher_id',
+        'day_of_week', 'start_time', 'end_time', 'room',
     ];
 
     public function classRoom()

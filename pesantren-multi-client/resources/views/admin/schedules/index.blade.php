@@ -28,7 +28,7 @@
             <tbody class="divide-y divide-gray-100">
                 @forelse($schedules as $s)
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm">{{ ucfirst($s->day) }}</td>
+                    <td class="px-4 py-3 text-sm">{{ ucfirst($s->day_of_week) }}</td>
                     <td class="px-4 py-3 text-sm">{{ $s->start_time }} - {{ $s->end_time }}</td>
                     <td class="px-4 py-3 text-sm">{{ $s->classRoom->name ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm">{{ $s->subject->name ?? '-' }}</td>

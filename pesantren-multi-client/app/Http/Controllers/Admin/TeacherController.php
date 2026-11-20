@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
@@ -28,6 +29,17 @@ class TeacherController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
+        // Ambil client dari route {client} (atau dari ClientContext)
+        $client = $request->route('client');
+        $clientId = $client instanceof \App\Models\Client
+            ? $client->id
+            : DB::table('clients')->where('slug', (string) $client)->value('id');
+
+        if (! $clientId) {
+            $clientId = 1; // fallback
+        }
+
+        $validated['client_id'] = $clientId;
         $validated['status'] = 'active';
 
         Teacher::create($validated);
@@ -36,14 +48,16 @@ class TeacherController extends Controller
             ->with('success', 'Guru berhasil ditambahkan.');
     }
 
-    public function edit(string $id)
+    public function edit(...$args)
     {
+        $id = end($args);
         $teacher = Teacher::findOrFail($id);
         return view('admin.teachers.edit', compact('teacher'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, ...$args)
     {
+        $id = end($args);
         $teacher = Teacher::findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:120',
@@ -56,8 +70,9 @@ class TeacherController extends Controller
             ->with('success', 'Data guru diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(...$args)
     {
+        $id = end($args);
         Teacher::findOrFail($id)->delete();
         return redirect(client_route('client.admin.teachers.index'))
             ->with('success', 'Guru dihapus.');

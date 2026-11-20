@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToTenantTrait;
+use App\Models\Concerns\BelongsToClient;
 use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model
 {
-    use BelongsToTenantTrait;
+    use BelongsToClient;
 
     protected $table = 'subjects';
 
-    protected $fillable = ['tenant_id', 'name'];
+    protected $fillable = ['client_id', 'name', 'code'];
 
     public function schedules()
     {

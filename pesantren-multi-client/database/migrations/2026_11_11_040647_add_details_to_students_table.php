@@ -9,9 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('students', function (Blueprint $table) {
+            if (!Schema::hasColumn('students', 'gender')) {
+                $table->string('gender')->nullable()->after('name');
+            }
             $table->string('birth_place')->nullable()->after('gender');
             $table->date('birth_date')->nullable()->after('birth_place');
-            $table->foreignId('class_id')->nullable()->after('birth_date');
+            $table->foreignId('class_id')->nullable()->constrained()->after('birth_date');
             $table->string('dormitory_name')->nullable()->after('class_id');
             $table->string('room_number')->nullable()->after('dormitory_name');
             $table->string('father_name')->nullable()->after('room_number');

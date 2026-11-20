@@ -1,16 +1,16 @@
-<x-layouts.admin title="Tambah Santri">
+﻿<x-layouts.admin title="Tambah Santri">
     @php $clientSlug = request()->route('client')?->slug ?? request()->route('client') ?? 'demo'; @endphp
     <form action="{{ client_route('client.admin.students.store', ['client' => $clientSlug]) }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-3xl">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">NIS *</label>
-                <input type="text" name="nis" value="{{ old('nis') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
+                <input type="text" name="nis" value="{{ old('nis') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm @error('nis') border-red-500 @enderror" required>
                 @error('nis') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap *</label>
-                <input type="text" name="full_name" value="{{ old('full_name') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm" required>
+                <input type="text" name="full_name" value="{{ old('full_name') }}" class="mt-1 w-full border-gray-300 rounded-lg shadow-sm @error('full_name') border-red-500 @enderror" required>
                 @error('full_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>

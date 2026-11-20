@@ -11,13 +11,15 @@ return new class extends Migration
         Schema::dropIfExists('schedules');
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client_id')->default(1)->constrained()->restrictOnDelete()->after('id');
             $table->unsignedBigInteger('tenant_id')->default(1);
             $table->unsignedBigInteger('class_id');
             $table->unsignedBigInteger('subject_id');
             $table->unsignedBigInteger('teacher_id');
-            $table->string('day');
+            $table->string('day_of_week');
             $table->time('start_time');
             $table->time('end_time');
+            $table->string('room');
             $table->timestamps();
         });
     }

@@ -19,7 +19,7 @@ class StudentController extends Controller
 
     public function create()
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::withoutGlobalScopes()->orderBy('name')->get();
         return view('admin.students.create', compact('classes'));
     }
 
@@ -45,8 +45,9 @@ class StudentController extends Controller
             ->with('success', 'Santri berhasil ditambahkan.');
     }
 
-    public function show(string $id)
+    public function show(...$args)
     {
+        $id = end($args);
         Log::info('show() dipanggil', ['id' => $id, 'type' => gettype($id)]);
 
         $student = Student::withoutGlobalScopes()->with('classRoom')->find($id);
@@ -59,18 +60,20 @@ class StudentController extends Controller
         return view('admin.students.show', compact('student'));
     }
 
-    public function edit(string $id)
+    public function edit(...$args)
     {
+        $id = end($args);
         $student = Student::withoutGlobalScopes()->find($id);
         if (! $student) {
             abort(404, "Santri dengan ID {$id} tidak ditemukan.");
         }
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::withoutGlobalScopes()->orderBy('name')->get();
         return view('admin.students.edit', compact('student', 'classes'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, ...$args)
     {
+        $id = end($args);
         $student = Student::withoutGlobalScopes()->find($id);
         if (! $student) {
             abort(404, "Santri dengan ID {$id} tidak ditemukan.");
@@ -96,8 +99,9 @@ class StudentController extends Controller
             ->with('success', 'Santri berhasil diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(...$args)
     {
+        $id = end($args);
         $student = Student::withoutGlobalScopes()->find($id);
         if (! $student) {
             abort(404, "Santri dengan ID {$id} tidak ditemukan.");
